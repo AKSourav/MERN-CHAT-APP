@@ -96,9 +96,16 @@ const MyChats = ({fetchAgain})=>{
                             >
                                 <Text>
                                     {!chat.isGroupChat
-                                    ? getSender(loggedUser,chat.users)
+                                    ? getSender(user,chat.users)
                                     : chat.chatName}
                                 </Text>
+                                {
+                                    chat.latestMessage?
+                                    (<Text fontSize="1.8vh">
+                                        <span style={{fontWeight:"bold"}}>{chat.latestMessage.sender.name}</span>:{chat.latestMessage.content}
+                                    </Text>)
+                                    :""
+                                }   
                             </Box>
                         ))}
                     </Stack>

@@ -6,7 +6,7 @@ import UserBadgeItem from './User Avatar/UserBadgeItem';
 import axios from 'axios';
 import UserListItem from './User Avatar/UserListItem';
 
-const UpdateGroupChatModal = ({fetchAgain,setFetchAgain}) =>{
+const UpdateGroupChatModal = ({fetchAgain,setFetchAgain, fetchMessages}) =>{
     const {isOpen, onOpen, onClose} = useDisclosure();
     const [groupChatName, setGroupChatName] = useState();
     const [search, setSearch] = useState("");
@@ -54,9 +54,8 @@ const UpdateGroupChatModal = ({fetchAgain,setFetchAgain}) =>{
         setFetchAgain(!fetchAgain);
         setSelectedChat(data);
         setLoading(false);
-
     }
-
+    
     const handleRemove=async (userToRemove)=>{
         // console.log(userToRemove);
         if (selectedChat.groupAdmin._id !== user._id && userToRemove._id!==user.id)
@@ -70,6 +69,40 @@ const UpdateGroupChatModal = ({fetchAgain,setFetchAgain}) =>{
             })
             return;
         }
+        
+        setLoading(true);
+        try {
+            
+            const config = {
+                headers:{
+                    Authorization:`Bearer ${user.token}`
+                }
+            }
+            
+            const {data} = await axios.put('/api/chat/groupremove',{
+                chatId:selectedChat._id,
+                userId:userToRemove._id
+            },config);
+            userToRemove._id===user._id ? setSelectedChat() : setSelectedChat(data);
+            setFetchAgain(!fetchAgain);
+            fetchMessages();
+                        
+        } catch (error) {
+            toast({
+                title: `Error Removing ${userToRemove.name}`,
+                description: error.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+            })
+        }
+        setLoading(false);
+
+    }
+
+    const handleRemoveThisUser=async (userToRemove)=>{
+        // console.log(userToRemove);
 
         setLoading(true);
         const config = {
@@ -219,7 +252,7 @@ const UpdateGroupChatModal = ({fetchAgain,setFetchAgain}) =>{
                         )}
                     </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme="red" onClick={()=>handleRemove(user)}>
+                        <Button colorScheme="red" onClick={()=>handleRemoveThisUser(user)}>
                             Leave Group
                         </Button>
                     </ModalFooter>

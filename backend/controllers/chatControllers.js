@@ -152,25 +152,50 @@ const addToGroup= asyncHandler(async (req,res)=>{
 
 const removeFromGroup=asyncHandler(async (req,res)=>{
     const {chatId,userId}=req.body;
-    
-    const updatedChat= await Chat.findByIdAndUpdate(
-        chatId,
+    const getChat= await Chat.findById(chatId);
+    if(JSON.stringify(getChat.groupAdmin)===JSON.stringify(userId) && getChat.users.length>=1)
+    {
+        const updatedChat=await Chat.findByIdAndUpdate(
+            chatId,
+            {
+                $pull: { users: userId },
+                groupAdmin:getChat.users[0]
+            },
+            {
+                new: true
+            }
+        ) .populate("users", "-password")
+            .populate("groupAdmin","-password");
+        if(!updatedChat)
         {
-            $pull: { users: userId }
-        },
-        {
-            new: true
+            res.status(400);
+            throw new Error("Chat Not Found")
         }
-    ) .populate("users", "-password")
-        .populate("groupAdmin","-password");
-    if(!updatedChat)
-    {
-        res.status(400);
-        throw new Error("Chat Not Found")
+        else
+        {
+            res.status(200).json(updatedChat);
+        }
     }
-    else
-    {
-        res.status(200).json(updatedChat);
+    else{
+        const updatedChat= await Chat.findByIdAndUpdate(
+            chatId,
+            {
+                // $pull: { users: userId }
+            },
+            {
+                new: true
+            }
+        ) .populate("users", "-password")
+            .populate("groupAdmin","-password");
+        if(!updatedChat)
+        {
+            res.status(400);
+            throw new Error("Chat Not Found")
+        }
+        else
+        {
+            res.status(200).json(updatedChat);
+        }
     }
 });
 
