@@ -52,6 +52,47 @@ const SingleChat = ({fetchAgain, setFetchAgain}) => {
             setLoading(false);
         }
     }
+    const fetchNotifications =async () =>{
+        try {
+            const config={
+                headers: {
+                    Authorization:`Bearer ${user.token}`
+                }
+            }
+            const {data}= await axios.get(`/api/chat/notifications`,config);
+            setNotification(data);
+
+        } catch (error) {
+            toast({
+                title: "Error Fetching Notifications",
+                description: error.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+            })
+        }
+    }
+    const updateNotifications =async () =>{
+        try {
+            const config={
+                headers: {
+                    Authorization:`Bearer ${user.token}`
+                }
+            }
+            const {data}= await axios.put(`/api/chat/notifications`,{chatId:selectedChat._id},config);
+
+        } catch (error) {
+            toast({
+                title: "Error Updated Notifications",
+                description: error.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom-left",
+            })
+        }
+    }
 
     const sendMessage= async (event)=>{
         if(event.key === "Enter" && newMessage) {
@@ -90,15 +131,29 @@ const SingleChat = ({fetchAgain, setFetchAgain}) => {
     
     useEffect(()=>{
         fetchMessages();
-        
+        fetchNotifications();
         selectedChatCompare = selectedChat;
+        if(selectedChat)
+        {
+            notification.filter(noti=>noti.chat._id!=selectedChat._id);
+        }
     },[selectedChat]);
     
     //socket.io-client implementation for connection
     useEffect(()=>{
         socket= io(ENDPOINT);
         socket.emit("setup", user);
-        socket.on("connected", ()=> setSocketConnected(true));
+        socket.on("connected", (userName)=> {
+            console.log(`${userName} you are connected` );
+            setSocketConnected(true)
+            toast({
+                title: `${userName} you are connected`,
+                status: "success",
+                duration: 2000,
+                isClosable: true,
+                position: "bottom-left",
+            })
+        });
 
         // console.log(isTyping)
         socket.on('typing',()=>setIsTyping(true));
@@ -123,6 +178,9 @@ const SingleChat = ({fetchAgain, setFetchAgain}) => {
                     setMessages([...messages, newMessageRecieved]);
                 }
             })
+
+        selectedChat && updateNotifications();
+
         })
         
         const typingHandler=(e)=>{

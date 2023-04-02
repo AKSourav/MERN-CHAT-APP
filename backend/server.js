@@ -6,6 +6,7 @@ const userRoutes = require('./routes/userRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const messageRoutes= require('./routes/messageRoutes');
 const {notFound,errorHandler} =require('.//middleware/errorMiddleware')
+const User = require('./models/userModel');
 
 const app=express();
 dotenv.config();
@@ -44,7 +45,7 @@ io.on("connection", (socket)=>{
     socket.on("setup", (userData)=>{
         socket.join(userData._id);
         console.log(userData._id)
-        socket.emit("connected");
+        socket.emit("connected",userData.name);
     });
 
     socket.on("join chat", (room)=>{
@@ -60,8 +61,13 @@ io.on("connection", (socket)=>{
 
         if(!chat.users) return console.log("chat.users not defined");
 
-        chat.users.forEach(user =>{
+        chat.users.forEach( async user =>{
             if (user._id === newMessageRecieved.sender._id) return;
+            const data=await User.findByIdAndUpdate(
+                user._id,
+                {$push:{notifications:newMessageRecieved._id}},
+                {new:true}
+            );
 
             socket.in(user._id).emit("message recieved", newMessageRecieved);
         })
