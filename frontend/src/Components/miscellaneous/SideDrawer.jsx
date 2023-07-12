@@ -42,18 +42,6 @@ const SideDrawer = ()=>{
     const toast = useToast();
 
     const handleSearch = async () =>{
-        // if(!search) {
-        //     toast({
-        //         title: "Please Enter Something in Search",
-        //         status: "warning",
-        //         duration: 5000,
-        //         isClosable: true,
-        //         position: "top-left",
-                
-        //     });
-        //     return;
-        // }
-
         try {
             setLoading(true);
 
@@ -139,7 +127,7 @@ const SideDrawer = ()=>{
                 </Tooltip>
 
                 <Text fontSize="2x1" fontFamily="Work Sans">
-                    Talk-A-Tive
+                    Chat/\App
                 </Text>
                 <div>
                     <Menu>

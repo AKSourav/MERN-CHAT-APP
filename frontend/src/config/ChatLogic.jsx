@@ -1,5 +1,22 @@
 export const getSender = (loggedUser, users)=>{
-    return users[0]._id === loggedUser._id ? users[1].name:users[0].name;
+  // console.log('USers:', users);
+  if(users===undefined)
+  {
+    // console.log('Undefined:',users);
+    return 'error name due to undefined';
+  }
+  if(users.length===1)
+  {
+    // console.log(users)
+    return users[0].name; 
+  } 
+  return users[0]._id === loggedUser._id ? users[1].name:users[0].name;
+};
+
+export const getSenderPic = (loggedUser, users)=>{
+  // console.log('USers:', users);
+    if(users.length===1) return users[0].pic; 
+    return users[0]._id === loggedUser._id ? users[1].pic:users[0].pic;
 };
 
 export const getSenderFull = (loggedUser, users)=>{

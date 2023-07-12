@@ -3,7 +3,8 @@
 .App{
   min-height: 100vh;
   display: flex;
-  background-image: url("./background.png");
+  background: rgb(238,184,208);
+  background: radial-gradient(circle, rgba(238,184,208,1) 0%, rgba(148,179,215,1) 100%);
   background-size: cover;
   background-position: center;
   color: black;
@@ -20,4 +21,12 @@
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.containers{
+  background-color: transparent;
+  border: 1px solid black;
+}
+.containers2{
+  background-color: transparent;
 }

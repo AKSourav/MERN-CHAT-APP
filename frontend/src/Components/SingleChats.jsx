@@ -1,4 +1,4 @@
-import { Box, FormControl, IconButton, Spinner, Text,Input, useToast } from '@chakra-ui/react';
+import { Box, FormControl, IconButton, Spinner, Text,Input, useToast, Button } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { ChatState } from '../Context/ChatProvider';
@@ -95,7 +95,7 @@ const SingleChat = ({fetchAgain, setFetchAgain}) => {
     }
 
     const sendMessage= async (event)=>{
-        if(event.key === "Enter" && newMessage) {
+        if(event.target.value==='send' || (event.key === "Enter" && newMessage) ) {
             socket.emit('stop typing',selectedChat._id);
             try {
                 const config={
@@ -108,12 +108,12 @@ const SingleChat = ({fetchAgain, setFetchAgain}) => {
                     chatId:selectedChat._id,
                     content:newMessage
                 }
-
+                setNewMessage("");
+                
                 const {data}= await axios.post('/api/message/',messageBody,config);
                 socket.emit("new message",data);
                 setMessages([...messages,data]);
-                setNewMessage("");
-
+                
 
             } catch (error) {
                 toast({
@@ -242,6 +242,7 @@ const SingleChat = ({fetchAgain, setFetchAgain}) => {
                                 />
                             </>
                         )}
+                        
                     </Text>
                     <Box
                       display="flex"
@@ -268,22 +269,24 @@ const SingleChat = ({fetchAgain, setFetchAgain}) => {
                                 <ScrollableChat messages={messages}/>
                             </div>
                         )}
-                        <FormControl onKeyDown={sendMessage} isRequired mt={3}>
-                            {isTyping?<span>Typing...</span>:""}
+            {isTyping?<Button color='green' fontWeight='bold' width='10%' bg='transparent' >Typing...</Button>:""}
+                        <FormControl onKeyDown={sendMessage} isRequired mt={3} display='flex'>
                             <Input
+                                borderTopRightRadius='0' borderBottomRightRadius='0'
                                 variant="filled"
                                 bg="#E0E0E0"
                                 placeholder="Enter a Message.."
                                 onChange={typingHandler}
                                 value={newMessage}
                             />
+                            <Button value='send' onClick={sendMessage} borderTopLeftRadius='0' borderBottomLeftRadius='0' color='rgb(35, 106, 228)'> Send</Button>
                         </FormControl>
                     </Box>
                 </>
             ):(
                 <Box display="flex" alignItems="center" justifyContent="center" h="100%">
                     <Text fontSize="3xl" pb={3} fontFamily="Work sans">
-                        Click on auser to start Chatting
+                        Click on a user to start Chatting
                     </Text>
                 </Box>
             )}

@@ -14,23 +14,23 @@ const Homepage = () => {
 
 
     return (
-        <Container maxW='xl' centerContent>
+        <Container  maxW='xl' centerContent>
             <Box
                 d='flex'
                 justifyContent='center'
                 textAlign="center"
                 p={3}
-                bg={'white'}
+                bg={'transparent'}
                 w="100%"
                 m="40px 0 15px 0"
                 borderRadius="lg"
                 borderWidth="1px"
             >
                 <Text fontSize="4xl" fontFamily="Work sans" color="black" >
-                    Talk-A-Tive
+                    CHAT/\APP
                 </Text>
             </Box>
-            <Box bg="white" w="100%" p={4} borderRadius="lg" borderWidth="1px" textColor="black">
+            <Box bg="transparent" w="100%" p={4} borderRadius="lg" borderWidth="1px" textColor="black">
                 <Tabs variant='soft-rounded' >
                     <TabList>
                         <Tab width="50%">Login</Tab>
