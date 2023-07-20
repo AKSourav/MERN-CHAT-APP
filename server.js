@@ -1,12 +1,12 @@
 const express=require("express");
 const dotenv=require("dotenv");
-const connectDB = require("./config/db");
+const connectDB = require("./backend/config/db.js");
 const colors = require("colors");
-const userRoutes = require('./routes/userRoutes');
-const chatRoutes = require('./routes/chatRoutes');
-const messageRoutes= require('./routes/messageRoutes');
-const {notFound,errorHandler} =require('.//middleware/errorMiddleware')
-const User = require('./models/userModel');
+const userRoutes = require('./backend/routes/userRoutes');
+const chatRoutes = require('./backend/routes/chatRoutes');
+const messageRoutes= require('./backend/routes/messageRoutes');
+const {notFound,errorHandler} =require('./backend/middleware/errorMiddleware')
+const User = require('./backend/models/userModel');
 const path= require('path');
 
 const app=express();
